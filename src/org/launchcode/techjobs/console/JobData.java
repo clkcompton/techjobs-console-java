@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -51,7 +49,36 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
+        //Attempt at Bonus #2; tried to use the cloning method. Wasn't sure how to create a "deep clone"
+//        ArrayList allJobsCopy = new ArrayList();
+//        allJobsCopy = (ArrayList)allJobs.clone();
+//        return allJobsCopy;
+
         return allJobs;
+
+    }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+        //this will search entire .csv and return or print the rows containing the search term
+        //needs to loop through each value when searching
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : allJobs) {
+            for (Map.Entry <String, String> name : row.entrySet()) {
+                String lowerCaseName = name.getValue().toLowerCase();
+                if (lowerCaseName.contains(value.toLowerCase()) && !jobs.contains(row)) {
+                    jobs.add(row);
+                }
+            }
+        }
+        if (jobs.size() == 0) {
+            System.out.println("Sorry, there are no results for that search.");
+            return jobs;
+        } else {
+            return jobs;
+        }
     }
 
     /**
@@ -74,14 +101,18 @@ public class JobData {
 
         for (HashMap<String, String> row : allJobs) {
 
-            String aValue = row.get(column);
+            String aValue = row.get(column).toLowerCase();
 
-            if (aValue.contains(value)) {
+            if (aValue.contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
-
-        return jobs;
+        if (jobs.size() == 0) {
+            System.out.println("Sorry, there are no results for that search.");
+            return jobs;
+        } else {
+            return jobs;
+        }
     }
 
     /**
